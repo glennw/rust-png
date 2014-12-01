@@ -33,16 +33,9 @@ pub const INFO_tRNS: c_int = 0x0010;
 pub type png_struct = c_void;
 pub type png_info = c_void;
 
-#[link(name = "png", kind = "static")]
+#[link(name = "png")]
 #[link(name = "z")]
-#[link(name = "shim", kind = "static")]
 extern {
-    // libc routines needed
-    pub fn setjmp(env: *mut c_void) -> c_int;
-
-    // shim routines
-    pub fn pngshim_jmpbuf(pnt_ptr: *mut png_struct) -> *mut c_void;
-
     // libpng routines
     pub fn png_get_header_ver(png_ptr: *mut png_struct) -> *mut c_char;
     pub fn png_sig_cmp(sig: *const u8, start: size_t, num_to_check: size_t) -> c_int;

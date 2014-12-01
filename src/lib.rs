@@ -89,11 +89,6 @@ pub fn load_png_from_memory(image: &[u8]) -> Result<Image,String> {
             ffi::png_destroy_read_struct(&mut png_ptr, ptr::null_mut(), ptr::null_mut());
             return Err("could not create info struct".to_string());
         }
-        let res = ffi::setjmp(ffi::pngshim_jmpbuf(png_ptr));
-        if res != 0 {
-            ffi::png_destroy_read_struct(&mut png_ptr, &mut info_ptr, ptr::null_mut());
-            return Err("error reading png".to_string());
-        }
 
         let mut image_data = ImageData {
             data: image,
@@ -205,11 +200,6 @@ pub fn store_png(img: &mut Image, path: &Path) -> Result<(),String> {
         if info_ptr.is_null() {
             ffi::png_destroy_write_struct(&mut png_ptr, ptr::null_mut());
             return Err("could not create info struct".to_string());
-        }
-        let res = ffi::setjmp(ffi::pngshim_jmpbuf(png_ptr));
-        if res != 0 {
-            ffi::png_destroy_write_struct(&mut png_ptr, &mut info_ptr);
-            return Err("error writing png".to_string());
         }
 
         ffi::png_set_write_fn(png_ptr, mem::transmute(writer), write_data, flush_data);
